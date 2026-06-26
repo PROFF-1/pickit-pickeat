@@ -1,15 +1,31 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import "../../global.css";
+import { Stack } from "expo-router";
+import { useGeneralStore } from "../stores/generalStore";
+import { useShallow } from "zustand/shallow";
+import { useEffect } from "react";
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+export default function RootLayout() {
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
-  );
+  // const { hasCompletedOnboarding, resetHasCompletedOnboarding } = useGeneralStore(useShallow((state) => ({
+  //   hasCompletedOnboarding: state.hasCompletedOnboarding,
+  //   resetHasCompletedOnboarding: state.resetHasCompletedOnboarding,
+  // })));
+
+  // useEffect(() => {
+  //   if (hasCompletedOnboarding) {
+  //     resetHasCompletedOnboarding();
+  //   }
+  // }, [hasCompletedOnboarding, resetHasCompletedOnboarding]);
+
+
+    return (
+      <Stack>
+        <Stack.Screen name="Index" options={{
+          headerShown: false,
+         }} />
+        <Stack.Screen name="(user)" options={{
+          headerShown: false,
+         }} />
+      </Stack>
+    );
 }
