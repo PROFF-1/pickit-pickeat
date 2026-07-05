@@ -13,16 +13,24 @@ const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 
 export default function userphoneauth() {
-  const { inputValue, setInputValue, resetInputValue } = useInputValueStore();
-  const [countryCode, setCountryCode] = useState("US");
-  const [callingCode, setCallingCode] = useState("1");
-
+  const { 
+    inputValue, 
+    setInputValue, 
+    countryCode, 
+    setCountryCode, 
+    callingCode, 
+    setCallingCode,
+    error,
+    setError
+    } = useInputValueStore();
 
 
 
   const storeNumber = async () => {
+
+    const formattedNumber = inputValue.startsWith("0") && (inputValue.trim().length == 10) ? inputValue.trim().slice(1) : inputValue.trim();
     try {
-      await AsyncStorage.setItem('phoneNumber', inputValue);
+      await AsyncStorage.setItem('phoneNumber', formattedNumber);
       await AsyncStorage.setItem('callingCode', callingCode);
       await AsyncStorage.setItem('otp', "1234");
     } catch (error) {
@@ -63,14 +71,18 @@ export default function userphoneauth() {
         </View>
         <View style={styles.inputContainer}>
             <TextInput
-                style={styles.input}
+                style={[styles.input, error ? { borderColor: "red", borderWidth: 1 } : null]}
                 placeholder="Enter your phone number"
                 value={inputValue}
                 onChangeText={setInputValue}
                 keyboardType="phone-pad"
+                onFocus={() => setError("")}
             />
         </View>
       </View>
+      {
+        error ? <Text style={{color: "red", marginTop: 10}}>{error}</Text> : null
+      }
       <Text style={styles.agreementText}>
         By continuing you agree to our 
         <Text style={styles.linkText}>Terms</Text> and <Text style={styles.linkText}>Conditions</Text> and the <Text style={styles.linkText}>Privacy Policy</Text>
@@ -81,7 +93,12 @@ export default function userphoneauth() {
         }
         onPress={() => {
             storeNumber();
+            if(inputValue.trim() !== "" && inputValue.trim().length >= 9 && inputValue.trim().length <= 10){
             router.push("/(user)/otpverification");
+            setError("");
+            }else{
+                setError("Please enter phone number");
+            }
         }}
         
         />

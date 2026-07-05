@@ -13,6 +13,9 @@ export default function UserLayout() {
        <Stack.Screen name="otpverification" options={{
         headerShown: false,
        }} />
+        <Stack.Screen name="inputprofile" options={{
+        headerShown: false,
+       }} />
     </Stack>
   );
 }

@@ -16,6 +16,7 @@ export const layout = {
     size: {
         xs: 10,
         sm: 12,
+        sm_base: 14,
         base: 18,
         md: 24,
         lg: 32,

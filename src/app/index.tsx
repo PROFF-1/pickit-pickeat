@@ -4,6 +4,8 @@ import React, {useState} from 'react'
 import Button from '@/components/shared/button';
 import { layout } from '@/constants/layout';
 import {router} from "expo-router";
+import { useShallow } from 'zustand/shallow';
+import { useGeneralStore } from '@/stores/generalStore';
 
 
 const screenHeight = Dimensions.get("window").height;
@@ -12,6 +14,12 @@ const screenWidth = Dimensions.get("window").width;
 
 export default function Index() {
 
+  const { setHasCompletedOnboarding,hasCompletedOnboarding } = useGeneralStore(useShallow((state) => ({
+    setHasCompletedOnboarding: state.setHasCompletedOnboarding,
+    hasCompletedOnboarding: state.hasCompletedOnboarding,
+  })));
+
+
     const [outline, setOutline]= useState<"user" | "vendor" | "rider" | "admin" | null>(null);
 
     const roleSelctionButtons = [
@@ -19,7 +27,15 @@ export default function Index() {
             title: "User",
             onPress: () => {
                 setOutline("user");
-                router.push("/(user)/Index");
+
+                if(!hasCompletedOnboarding){
+                  setHasCompletedOnboarding(true);
+                  router.push("/(user)/Index");
+                }else{
+                  router.push("/(user)/userphoneauth");
+                }
+
+                
               },
         },
         {

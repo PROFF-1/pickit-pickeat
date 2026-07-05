@@ -16,6 +16,9 @@ export default function Index() {
   const { setHasCompletedOnboarding } = useGeneralStore(useShallow((state) => ({
     setHasCompletedOnboarding: state.setHasCompletedOnboarding,
   })));
+
+
+  
  
   return (
     <View style={styles.screenContainer}>
