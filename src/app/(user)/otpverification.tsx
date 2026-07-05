@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
-import React,{useEffect, useState} from 'react'
+import React,{useEffect} from 'react'
 import { OtpInput } from "react-native-otp-entry";
 import { layout } from '@/constants/layout';
 import { router } from 'expo-router';
 import Button from '@/components/shared/button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from '@/components/shared/header';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import * as Expo from '@expo/vector-icons';
+import {useOtpStore} from '@/stores/generalStore';
 
 
 
@@ -12,9 +16,10 @@ const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 export default function otpverification() {
 
-    const [number, setNumber] = useState<string | null>("");
-    const [otp, setOtp] = useState("");
-    const [error, setError] = useState("");
+
+    const { otp, setOtp, error, setError, number, setNumber } = useOtpStore()
+
+
 
 
 
@@ -22,7 +27,7 @@ export default function otpverification() {
     const getNumber = async () => {
         try {
           const phoneNumber = await AsyncStorage.getItem('phoneNumber');
-          const callingCode = await AsyncStorage.getItem('callingCode');
+          const callingCode = await AsyncStorage.getItem('callingCode'); 
           if (phoneNumber !== null && callingCode !== null) {
             setNumber(`+${callingCode}${phoneNumber}`);
           }
@@ -45,10 +50,17 @@ export default function otpverification() {
     useEffect(() => {
         getNumber();
         getOtp();
+        setError(null);
     }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+        <Header title='Enter Code' 
+        leftIcon={<Expo.MaterialIcons name="arrow-back" size={24} color="black" />}
+         onLeftIconPress={() => router.back()}
+         rightIcon
+         />
+        <View style={styles.otpView}>
       <OtpInput
         numberOfDigits={4}
         focusColor="green"
@@ -66,7 +78,6 @@ export default function otpverification() {
         onFilled={(text) => {
             if (text.length === 4 && text === otp) {
                     console.log("OTP is correct");
-                    router.push("/(user)/Index");
                 } else {
                     setError("Incorrect OTP. Please try again.");
                 }
@@ -93,17 +104,18 @@ export default function otpverification() {
         {
             error ? <Text style={{color: "red", marginTop: 10}}>{error}</Text> : null
         }
-        <Text style={styles.instructionText}>Enter the four digit code sent to {number}</Text>
+        <Text style={styles.instructionText}>Enter the four digit code sent to{"\n"} {number}</Text>
+        </View>
         <Button title="Continue" variant="primary"
                 style={
                   styles.continueButton
                 }
                 onPress={() => {
-                    router.push("/(user)/otpverification");
+                    router.push("/(user)/inputprofile");
                 }}
                 
         />
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -112,8 +124,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        paddingTop: screenHeight * 0.25,
         backgroundColor: layout.colors.white_background,
+    },
+    otpView:{
+        paddingTop: screenHeight * 0.2,
+        alignItems: "center",
+        justifyContent: "center",
     },
     otpcontainer: {
      padding: 10,
