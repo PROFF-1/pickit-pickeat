@@ -12,6 +12,8 @@ interface buttonProps{
     variant: "primary" | "secondary" | "outlined";
     textStyle?: object;
     onPress?: () => void;
+    leftIcon?: React.ReactNode;
+    leftIconStyle?: object;
 
 }
 
@@ -43,7 +45,7 @@ type buttonVariant = "primary" | "secondary" | "outlined";
     }
 
 
-export default function Button({title, variant, style, textStyle, onPress}: buttonProps) {
+export default function Button({title, variant, style, textStyle, onPress, leftIcon, leftIconStyle}: buttonProps) {
 
 
   return (
@@ -56,6 +58,7 @@ export default function Button({title, variant, style, textStyle, onPress}: butt
      ]}
      onPress={onPress}
     >
+        {leftIcon && <View style={leftIconStyle}>{leftIcon}</View>}
       <Text
         style={[
             styles.buttonTextStyle,
@@ -74,6 +77,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0.27 * screenWidth,
         paddingVertical: 0.02 * screenHeight,
         borderRadius: 15,
+        flexDirection: "row",
     },
     buttonTextStyle: {
         fontWeight: layout.weight.light,
