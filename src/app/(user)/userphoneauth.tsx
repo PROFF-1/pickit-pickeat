@@ -4,7 +4,7 @@ import pickitpickeatLogo from "../../assets/pickitpickeatLogo.png";
 import {layout} from '../../constants/layout';
 import Button from '../../components/shared/button';
 import {router} from "expo-router";
-import {useInputValueStore} from "../../stores/generalStore";
+import {usePhoneInputValueStore} from "../../stores/generalStore";
 import CountryPicker from "react-native-country-picker-modal";
 import * as Expo  from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,7 +22,7 @@ export default function userphoneauth() {
     setCallingCode,
     error,
     setError
-    } = useInputValueStore();
+    } = usePhoneInputValueStore();
 
 
 

@@ -7,13 +7,28 @@ import Header from '@/components/shared/header'
 import { router } from 'expo-router'
 import * as Expo from '@expo/vector-icons';
 import Button from '@/components/shared/button'
+import { useUserProfileStore } from '@/stores/generalStore'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 export default function InputProfile() {
 
+  const { firstName, setFirstName, lastName, setLastName, email, setEmail } = useUserProfileStore();
 
+
+  const storeUserProfile = async () => {
+    try {
+      await AsyncStorage.setItem('userBasicDeatils', JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+        email: email
+      }));
+    } catch (error) {
+      console.error('Error storing user profile:', error);
+    }
+  }
 
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
@@ -32,15 +47,22 @@ export default function InputProfile() {
        <Text style={styles.addressText}>
           Let us know how to properly address you
         </Text>
-      <Input placeholder='First Name' />
-      <Input placeholder='Last Name' />
-      <Input placeholder='Email' />
+      <Input placeholder='First Name' 
+        value={firstName} onChangeText={setFirstName} 
+      />
+      <Input placeholder='Last Name'
+        value={lastName} onChangeText={setLastName}
+      />
+      <Input placeholder='Email' 
+        value={email} onChangeText={setEmail}
+      />
        <Button title="Continue" variant="primary"
               style={
                 styles.continueButton
               }
               onPress={() => {
-                  router.push("/(user)/inputprofile");
+                storeUserProfile();
+                router.push("/(user)/otpverification");
               }}
               
       />

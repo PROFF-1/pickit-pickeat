@@ -8,7 +8,7 @@ interface GeneralStore {
     resetHasCompletedOnboarding: () => void;
    
 }
-interface inputValueStore {
+interface inputPhoneValueStore {
     inputValue: string;
     setInputValue: (value: string) => void;
     resetInputValue: () => void;
@@ -32,6 +32,17 @@ interface otpStore {
 }
 
 
+interface userProfileStore {
+    firstName: string;
+    setFirstName: (value: string) => void;
+    lastName: string;
+    setLastName: (value: string) => void;
+    email: string;
+    setEmail: (value: string) => void;
+}
+
+
+
     export const useGeneralStore = create<GeneralStore>()(persist(
     (set) => ({
         hasCompletedOnboarding: true,
@@ -45,7 +56,7 @@ interface otpStore {
 ));
 
 
-    export const useInputValueStore = create<inputValueStore>((set) => ({
+    export const usePhoneInputValueStore = create<inputPhoneValueStore>((set) => ({
         inputValue: "",
         setInputValue: (value: string) => set({ inputValue: value }),
         resetInputValue: () => set({ inputValue: "" }),
@@ -68,5 +79,13 @@ interface otpStore {
     }));
 
 
+    export const useUserProfileStore = create<userProfileStore>((set) => ({
+        firstName: "",
+        setFirstName: (value: string) => set({ firstName: value }),
+        lastName: "",
+        setLastName: (value: string) => set({ lastName: value }),
+        email: "",
+        setEmail: (value: string) => set({ email: value }),
+    }));
 
 
