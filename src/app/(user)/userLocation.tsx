@@ -1,13 +1,12 @@
-import React, { useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, Pressable, Text } from 'react-native';
-import Mapbox, { MapView, Camera } from '@rnmapbox/maps';
 import GeocoderInput, { GeocoderResult } from '@/components/shared/GeoInput';
-import { layout } from '@/constants/layout';
 import Header from '@/components/shared/header';
-import { router } from 'expo-router';
+import { layout } from '@/constants/layout';
 import * as Expo from '@expo/vector-icons';
+import Mapbox from '@rnmapbox/maps';
+import { router } from 'expo-router';
+import { useRef, useState } from 'react';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Button from '@/components/shared/button';
 
 Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN ?? '');
 
