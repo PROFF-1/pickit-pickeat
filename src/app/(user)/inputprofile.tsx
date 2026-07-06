@@ -62,7 +62,7 @@ export default function InputProfile() {
               }
               onPress={() => {
                 storeUserProfile();
-                router.push("/(user)/otpverification");
+                router.push("/(user)/userLocation");
               }}
               
       />
