@@ -42,6 +42,16 @@ interface userProfileStore {
 }
 
 
+interface userLocationStore {
+    location: any;
+    setLocation: (value: any) => void;
+    errorMsg: string;
+    setErrorMsg: (value: string) => void;
+    loading: boolean;
+    setLoading: (value: boolean) => void;
+}
+
+
 
     export const useGeneralStore = create<GeneralStore>()(persist(
     (set) => ({
@@ -87,5 +97,23 @@ interface userProfileStore {
         email: "",
         setEmail: (value: string) => set({ email: value }),
     }));
+
+
+
+    export const useLocationStore = create<userLocationStore>()(persist(
+    (set) => ({
+        location: {},
+        setLocation: (value: any) => set({ location: value }),
+        errorMsg: "",
+        setErrorMsg: (value: string) => set({ errorMsg: value }),
+        loading: true,
+        setLoading: (value: boolean) => set({ loading: value }),
+    }),
+    {
+        name: "user-location-storage",
+        storage: createJSONStorage(() => AsyncStorage),
+    }
+));
+
 
 

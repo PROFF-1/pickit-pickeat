@@ -10,13 +10,14 @@ interface headerProps{
     rightIcon?: null | React.ReactNode;
     onLeftIconPress?: () => void;
     onRightIconPress?: () => void;
+    titleStyle?: object;
 }
 
-export default function Header({ title, leftIcon, rightIcon, onLeftIconPress, onRightIconPress }: headerProps) {
+export default function Header({ title, leftIcon, rightIcon, onLeftIconPress, onRightIconPress, titleStyle }: headerProps) {
   return (
     <View style={styles.headerContainer}>
       {leftIcon && <View onTouchStart={onLeftIconPress}>{leftIcon}</View>}
-      <Text style={styles.headerTitle}>{title || "Header"}</Text>
+      <Text style={[styles.headerTitle, titleStyle]}>{title || "Header"}</Text>
       {rightIcon && <View onTouchStart={onRightIconPress}>{rightIcon}</View>}
     </View>
   )
