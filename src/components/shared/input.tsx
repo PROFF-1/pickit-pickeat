@@ -13,11 +13,13 @@ interface InputProps {
     rightIcon?: React.ReactNode;
     onLeftIconPress?: () => void;
     onRightIconPress?: () => void;
+    inputContainerStyle?: object;
+    variant?: "primary" | "multiLine" ;
 }
 
 const { width, height } = Dimensions.get('window');
 
-export default function Input({ placeholder, value, onPress, leftIcon, rightIcon, onLeftIconPress, onRightIconPress, onChangeText }: InputProps) {
+export default function Input({ placeholder, value, onPress, leftIcon, rightIcon, onLeftIconPress, onRightIconPress, onChangeText, inputContainerStyle, variant }: InputProps) {
   
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value || '');
@@ -66,7 +68,9 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
             backgroundColor: layout.colors.quatenary,
             borderColor: layout.colors.white_background,
             borderWidth: 1.5,
-            }
+            },
+            inputContainerStyle
+
     ]}>
       <Animated.View style={[
         styles.lableContainer,
@@ -89,6 +93,7 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
       onBlur={handleBlur}
       placeholderTextColor="transparent"
       onChangeText={handleChangeText}
+      multiline={variant === "multiLine"}
       />
     </View>
   )

@@ -19,6 +19,9 @@ export default function UserLayout() {
        <Stack.Screen name="userLocation" options={{
         headerShown: false,
        }} />
+       <Stack.Screen name="deliveryAddress" options={{
+        headerShown: false,
+       }} />
     </Stack>
   );
 }

@@ -4,14 +4,28 @@ import { layout } from '@/constants/layout';
 import * as Expo from '@expo/vector-icons';
 import Mapbox from '@rnmapbox/maps';
 import { router } from 'expo-router';
-import { useRef, useState } from 'react';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Dimensions, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Location from 'expo-location';
+import { useLocationStore } from '@/stores/generalStore';
+import { useShallow } from 'zustand/shallow';
+
 
 Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN ?? '');
 
 const screenWidth = Dimensions.get('window').width;
 export default function UserLocationScreen() {
+
+
+    const { location, setLocation, errorMsg, setErrorMsg, loading, setLoading } = useLocationStore(useShallow((state) => ({
+        location: state.location,
+        setLocation: state.setLocation,
+        errorMsg: state.errorMsg,
+        setErrorMsg: state.setErrorMsg,
+        loading: state.loading,
+        setLoading: state.setLoading,
+    })));
   const cameraRef = useRef<Mapbox.Camera>(null);
   const [center, setCenter] = useState<[number, number]>([-0.187, 5.6037]); // Accra
 
@@ -21,16 +35,34 @@ export default function UserLocationScreen() {
     cameraRef.current?.flyTo([lng, lat], 1000);
   };
 
+
+
+  const getCurrentLocation = async () => {
+      // 1. Request foreground location permission
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        setLoading(false);
+        return;
+      }
+
+      // 2. Fetch current coordinates
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      
+      setLocation(currentLocation);
+      setLoading(false);
+      
+      console.log('Current Location:', location.coords);
+      router.push('/(user)/deliveryAddress');
+    }
+
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* <MapView style={styles.map} styleURL="mapbox://styles/mapbox/standard">
-        <Camera
-          ref={cameraRef}
-          zoomLevel={13}
-          centerCoordinate={center}
-          animationMode="flyTo"
-        />
-      </MapView> */}
+     
 
       {/* Geocoder floats over the map */}
        <Header title='Complete Profile' 
@@ -55,7 +87,9 @@ export default function UserLocationScreen() {
     </Pressable>
     <View style={styles.line}/>
 
-    <Pressable style={styles.currentLocation} onPress={() => router.push('/(user)/inputprofile')}>
+    <TouchableOpacity style={styles.currentLocation} onPress={() =>{
+        getCurrentLocation();
+    }}>
         <Expo.MaterialIcons name="location-on" size={20} color={layout.colors.primary} style={styles.icon} />
         <View>
         <Text style={styles.chooseButtonText}>
@@ -65,7 +99,7 @@ export default function UserLocationScreen() {
             Use Current Location
         </Text>
         </View>
-    </Pressable>
+    </TouchableOpacity>
     </SafeAreaView>
   );
 }
