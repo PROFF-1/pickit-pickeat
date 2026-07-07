@@ -1,13 +1,12 @@
-import { Dimensions, StyleSheet, Text, View,Image, TextInput } from 'react-native'
-import React,{useState} from 'react'
-import pickitpickeatLogo from "../../assets/pickitpickeatLogo.png";
-import {layout} from '../../constants/layout';
-import Button from '../../components/shared/button';
-import {router} from "expo-router";
-import {usePhoneInputValueStore} from "../../stores/generalStore";
-import CountryPicker from "react-native-country-picker-modal";
-import * as Expo  from '@expo/vector-icons';
+import * as Expo from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from "expo-router";
+import { Dimensions, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import CountryPicker from "react-native-country-picker-modal";
+import pickitpickeatLogo from "../../assets/pickitpickeatLogo.png";
+import Button from '../../components/shared/button';
+import { layout } from '../../constants/layout';
+import { usePhoneInputValueStore } from "../../stores/generalStore";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;

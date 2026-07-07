@@ -218,6 +218,9 @@ const [center, setCenter] = useState<[number, number]>([
               style={
                 styles.continueButton
               }
+              onPress={() => {
+                router.push("/(user)/foodFeed");
+              }}
               
               />
       </ScrollView>
