@@ -1,4 +1,4 @@
-interface RootObject {
+ export interface RootObject {
   kitchens: Kitchen[];
   foods: Food[];
   pickups: Pickup[];
@@ -19,7 +19,7 @@ interface Pickup {
   status: string;
 }
 
-interface Food {
+ export interface Food {
   id: number;
   providerId: number;
   title: string;
@@ -36,13 +36,13 @@ interface Food {
   status: string;
 }
 
-interface Location {
+export interface Location {
   latitude: number;
   longitude: number;
   addressSnippet: string;
 }
 
-interface Kitchen {
+export interface Kitchen {
   id: number;
   businessName: string;
   fullName: string;
@@ -62,7 +62,7 @@ interface Kitchen {
   joinedAt: string;
 }
 
-interface Availability {
+export interface Availability {
   from: string;
   to: string;
   availabityOnHolidays: string;
