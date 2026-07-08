@@ -22,9 +22,7 @@ export default function UserLayout() {
        <Stack.Screen name="deliveryAddress" options={{
         headerShown: false,
        }} />
-       <Stack.Screen name="foodFeed" options={{
-        headerShown: false,
-       }} />
+       
     </Stack>
   );
 }

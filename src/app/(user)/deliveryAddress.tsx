@@ -219,7 +219,7 @@ const [center, setCenter] = useState<[number, number]>([
                 styles.continueButton
               }
               onPress={() => {
-                router.push("/(user)/foodFeed");
+                router.push("../(tabs)");
               }}
               
               />
