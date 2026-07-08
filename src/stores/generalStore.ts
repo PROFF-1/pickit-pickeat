@@ -1,6 +1,7 @@
 import {create} from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CountryCode } from "react-native-country-picker-modal";
 
 interface GeneralStore {
     hasCompletedOnboarding: boolean;
@@ -12,8 +13,8 @@ interface inputPhoneValueStore {
     inputValue: string;
     setInputValue: (value: string) => void;
     resetInputValue: () => void;
-    countryCode: string;
-    setCountryCode: (value: string) => void;
+    countryCode: CountryCode;
+    setCountryCode: (value: CountryCode) => void;
     callingCode: string;
     setCallingCode: (value: string) => void;
      error: string;
@@ -70,8 +71,8 @@ interface userLocationStore {
         inputValue: "",
         setInputValue: (value: string) => set({ inputValue: value }),
         resetInputValue: () => set({ inputValue: "" }),
-        countryCode: "US",
-        setCountryCode: (value: string) => set({ countryCode: value }),
+        countryCode: "US" as CountryCode,
+        setCountryCode: (value: CountryCode) => set({ countryCode: value }),
         callingCode: "1",
         setCallingCode: (value: string) => set({ callingCode: value }),
         error: "",

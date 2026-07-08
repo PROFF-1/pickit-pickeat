@@ -42,7 +42,9 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.5.0",
     "@types/react": "~19.2.2",
+    "json-server": "^1.0.0-beta.15",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -51,7 +53,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "server": "json-server --watch jsonServer/db.json --port 5000 --host 0.0.0.0"
   },
   "private": true
 }
