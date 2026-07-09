@@ -9,6 +9,9 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAddressStore} from "../../stores/generalStore";
+import { usePhoneInputValueStore } from '@/stores/generalStore';
 
 
 Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN ?? '');
@@ -19,7 +22,10 @@ const screenHeight= Dimensions.get("window").height;
 
  export default function DeliveryAddress() {
 
-  const [selectedOption, setSelectedOption] = useState<string | null>("1");
+  const {buildingType, setBuildingType, Apt, setApt, BusinessName, setBusinessName, deliveryInstructions, setDeliveryInstructions, delieveryOption, setDelieveryOption} = useAddressStore();
+  const {variant, setVariant} = usePhoneInputValueStore();
+  const [basicDetails, setBasicDetails] = useState<{firstName: string, lastName: string, email: string} | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string>("1");
 
 
 
@@ -29,7 +35,12 @@ const screenHeight= Dimensions.get("window").height;
   }
 
   const handleOptionSelect = (optionId: string) => {
-    setSelectedOption(optionId);
+    const selected = deliveryOptions.find(option => option.id === optionId);
+    if (selected) {
+      setSelectedOption(selected.id);
+          setDelieveryOption(selected.option);
+
+    }
   }
 
 
@@ -63,7 +74,37 @@ const [center, setCenter] = useState<[number, number]>([
 
     useEffect(() => {
         handleEnlarge();
+        AsyncStorage.getItem('userBasicDeatils').then((value) => {
+          if (value) {
+            const userDetails = JSON.parse(value);
+            setBasicDetails(userDetails);
+            console.log('Retrieved user details:', userDetails);
+          } else {
+            console.log('No user details found in AsyncStorage.');
+          }
+        });
     }, []);
+
+    const storeUpdatedUserInfo = async () => {
+      try {
+        if (basicDetails) {
+          const updatedDetails = {
+            ...basicDetails,
+            buildingType: buildingType,
+            Apt: Apt,
+            BusinessName: BusinessName,
+            deliveryInstructions: deliveryInstructions,
+            delieveryOption: delieveryOption ,
+          };
+          await AsyncStorage.setItem('userBasicDeatils', JSON.stringify(updatedDetails));
+          console.log('Updated user details stored successfully:', updatedDetails);
+        } else {
+          console.error('No basic details available to update.');
+        }
+      } catch (error) {
+        console.error('Error storing updated user details:', error);
+      }
+    };
 
 
    useEffect(() => {
@@ -157,20 +198,23 @@ const [center, setCenter] = useState<[number, number]>([
       
       <Input 
        placeholder="Building Type"
-       value=""
-       onChangeText={() => {}}
+       value={buildingType}
+       onChangeText={setBuildingType}
+       variant={variant}
        inputContainerStyle={{ marginTop: 0 }}
       />
       <Input 
        placeholder="Apt/Suite/Building floor"
-       value=""
-       onChangeText={() => {}}
+       value={Apt}
+       onChangeText={setApt}
+       variant={variant}
        inputContainerStyle={{ marginTop: 0 }}
       />
       <Input 
        placeholder="Business/ Building Name"
-       value=""
-       onChangeText={() => {}}
+       value={BusinessName}
+       onChangeText={setBusinessName}
+       variant={variant}
        inputContainerStyle={{ marginTop: 0 }}
       />
 
@@ -208,9 +252,9 @@ const [center, setCenter] = useState<[number, number]>([
 
       <Input
         placeholder="Delivery Instructions"
-        value=""
-        onChangeText={() => {}}
-        variant="multiLine"
+        value={deliveryInstructions}
+        onChangeText={setDeliveryInstructions}
+        variant= {variant}
         inputContainerStyle={styles.messageContainer}
       />
 
@@ -219,7 +263,13 @@ const [center, setCenter] = useState<[number, number]>([
                 styles.continueButton
               }
               onPress={() => {
+                if(!Apt || !BusinessName || !buildingType || !delieveryOption || !deliveryInstructions) {
+                    setVariant("error");
+                  } else {
+                    setVariant("primary");
+                    storeUpdatedUserInfo();
                 router.push("../(tabs)");
+                                }
               }}
               
               />

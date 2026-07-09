@@ -19,6 +19,8 @@ interface inputPhoneValueStore {
     setCallingCode: (value: string) => void;
      error: string;
     setError: (value: string) => void;
+    variant: string;
+    setVariant: (value: string) => void;
 
 }
 
@@ -53,6 +55,23 @@ interface userLocationStore {
 }
 
 
+interface userAddressStore {
+    location: userLocationStore,
+    buildingType: string,
+    setBuildingType: (value: string) => void,
+    Apt: string,
+    BusinessName: string,
+    setApt: (value: string) => void,
+    setBusinessName: (value: string) => void,
+    deliveryInstructions: string,
+    setDeliveryInstructions: (value: string) => void,
+    delieveryOption: string,
+    setDelieveryOption: (value: string) => void,
+    errorMsg: string,
+    setErrorMsg: (value: string) => void,
+}
+
+
 
     export const useGeneralStore = create<GeneralStore>()(persist(
     (set) => ({
@@ -77,6 +96,8 @@ interface userLocationStore {
         setCallingCode: (value: string) => set({ callingCode: value }),
         error: "",
         setError: (value: string) => set({ error: value }),
+        variant: "primary",
+        setVariant: (value: string) => set({ variant: value }),
     }));
 
 
@@ -115,6 +136,28 @@ interface userLocationStore {
         storage: createJSONStorage(() => AsyncStorage),
     }
 ));
+
+
+
+export const useAddressStore = create<userAddressStore>()(persist((set) => ({
+    location: useLocationStore.getState(),
+    buildingType: "",
+    setBuildingType: (value: string) => set({ buildingType: value }),
+    Apt: "",
+    setApt: (value: string) => set({ Apt: value }),
+    BusinessName: "",
+    setBusinessName: (value: string) => set({ BusinessName: value }),
+    deliveryInstructions: "",
+    setDeliveryInstructions: (value: string) => set({ deliveryInstructions: value }),
+    delieveryOption: "",
+    setDelieveryOption: (value: string) => set({ delieveryOption: value }),
+    errorMsg: "",
+    setErrorMsg: (value: string) => set({ errorMsg: value }),
+}), {
+    name: "user-address-storage",
+    storage: createJSONStorage(() => AsyncStorage),
+
+}));
 
 
 

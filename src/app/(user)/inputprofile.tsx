@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableWithoutFeedback, View, Keyboard, Dimensions} from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Input from '@/components/shared/input'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { layout } from '@/constants/layout'
@@ -7,7 +7,7 @@ import Header from '@/components/shared/header'
 import { router } from 'expo-router'
 import * as Expo from '@expo/vector-icons';
 import Button from '@/components/shared/button'
-import { useUserProfileStore } from '@/stores/generalStore'
+import { usePhoneInputValueStore, useUserProfileStore } from '@/stores/generalStore'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -16,7 +16,7 @@ const screenHeight = Dimensions.get('window').height;
 export default function InputProfile() {
 
   const { firstName, setFirstName, lastName, setLastName, email, setEmail } = useUserProfileStore();
-
+  const { variant, setVariant } = usePhoneInputValueStore();
 
   const storeUserProfile = async () => {
     try {
@@ -48,13 +48,16 @@ export default function InputProfile() {
           Let us know how to properly address you
         </Text>
       <Input placeholder='First Name' 
-        value={firstName} onChangeText={setFirstName} 
+        value={firstName} onChangeText={setFirstName}
+        variant={variant}
       />
       <Input placeholder='Last Name'
         value={lastName} onChangeText={setLastName}
+        variant={variant}
       />
       <Input placeholder='Email' 
         value={email} onChangeText={setEmail}
+        variant={variant}
       />
        <Button title="Continue" variant="primary"
               style={
@@ -62,7 +65,13 @@ export default function InputProfile() {
               }
               onPress={() => {
                 storeUserProfile();
-                router.push("/(user)/userLocation");
+                if(!firstName || !lastName || !email) {
+                  setVariant("error");
+                } else {
+                  setVariant("primary");
+                  storeUserProfile();
+                  router.push("/(user)/deliveryAddress");
+                }
               }}
               
       />

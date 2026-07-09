@@ -1,5 +1,6 @@
 import "../../global.css";
 import { Stack } from "expo-router";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import { useGeneralStore } from "../stores/generalStore";
 import { useShallow } from "zustand/shallow";
 import { useEffect } from "react";
@@ -18,7 +19,10 @@ export default function RootLayout() {
   // }, [hasCompletedOnboarding, resetHasCompletedOnboarding]);
 
 
+
+  const queryClient = new QueryClient();
     return (
+      <QueryClientProvider client={queryClient}>
       <Stack>
         <Stack.Screen name="index" options={{
           headerShown: false,
@@ -30,5 +34,6 @@ export default function RootLayout() {
           headerShown: false,
          }} />
       </Stack>
+      </QueryClientProvider>
     );
 }
