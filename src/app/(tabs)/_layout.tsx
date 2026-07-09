@@ -24,7 +24,7 @@ export default function TabsLayout() {
           <Expo.Ionicons name="home" size={size} color={color} />
         ),
       }} />
-      <Tabs.Screen name="search" options={{
+      {/* <Tabs.Screen name="search" options={{
         title: "Search",
         tabBarIcon: ({ color, size }) => (
           <Expo.Ionicons name="search" size={size} color={color} />
@@ -35,7 +35,7 @@ export default function TabsLayout() {
         tabBarIcon: ({ color, size }) => (
           <Expo.Ionicons name="person" size={size} color={color} />
         ),
-      }} />
+      }} /> */}
     </Tabs>
   );
 }

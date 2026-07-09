@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Animated, Easing, Dimensions } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { layout } from '@/constants/layout'
 import { usePhoneInputValueStore } from '@/stores/generalStore'
 
@@ -60,6 +60,19 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
     }
   }
 
+  useEffect(() => {
+    if(value){
+      Animated.timing(transY.current, {
+      toValue: -15,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.ease
+    }).start();
+
+    }
+
+  }, [value]);
+
   const handleChangeText = (text: string) => {
     setInputValue(text);  
     onChangeText && onChangeText(text); 
@@ -109,7 +122,7 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
       
     </View>
     {variant === "error" && (
-        <Text style={styles.errorText}>Input Field cannot be empty</Text>
+        <Text style={styles.errorText}>Field cannot be empty</Text>
     )}
     </View>
   )
