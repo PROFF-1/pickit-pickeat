@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 import {useFoodStore} from "../../stores/foodStore";
 import {useFood} from "../../hooks/use-food";
-import {useStore} from "zustand";
-import { useShallow } from 'zustand/shallow';
+import {SafeAreaView} from "react-native-safe-area-context";
+import * as Expo from "@expo/vector-icons";
 
 interface Listing {
   id: number;
@@ -36,7 +36,17 @@ export default function FoodFeed() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <TouchableWithoutFeedback>
+          <View>
+            <Expo.FontAwesome5 name="user-circle" size={24} color="black" />
+          </View>
+          <Text>
+            Welcome
+          </Text>
+        </TouchableWithoutFeedback>
+      </View>
       <FlatList
         data={foodItems}
         keyExtractor={(item) => item.id.toString()}
@@ -48,14 +58,34 @@ export default function FoodFeed() {
           </View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5', paddingTop: 50 },
-  card: { backgroundColor: '#fff', margin: 10, padding: 15, borderRadius: 10 },
-  image: { width: '100%', height: 150, borderRadius: 8 },
-  title: { fontSize: 18, fontWeight: 'bold', marginTop: 10 },
-  category: { color: 'gray', fontSize: 14 }
+  container: { 
+    flex: 1,
+   backgroundColor: '#f5f5f5', 
+   paddingTop: 50 
+  },
+  card: { 
+    backgroundColor: '#fff', 
+    margin: 10, 
+    padding: 15, 
+    borderRadius: 10 
+  },
+  image: { 
+    width: '100%', 
+    height: 150, 
+    borderRadius: 8 
+  },
+  title: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    marginTop: 10 
+  },
+  category: { 
+    color: 'gray', 
+    fontSize: 14 
+  }
 });

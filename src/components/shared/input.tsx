@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Animated, Easing, Dimensions } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { layout } from '@/constants/layout'
+import { usePhoneInputValueStore } from '@/stores/generalStore'
 
 
 
@@ -14,7 +15,7 @@ interface InputProps {
     onLeftIconPress?: () => void;
     onRightIconPress?: () => void;
     inputContainerStyle?: object;
-    variant?: "primary" | "multiLine" ;
+    variant?: String |"primary" | "multiLine" | "error" ;
 }
 
 const { width, height } = Dimensions.get('window');
@@ -24,6 +25,8 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
   const [isFocused, setIsFocused] = useState(false);
   const [inputValue, setInputValue] = useState(value || '');
   const transY = useRef(new Animated.Value(0));
+   variant = usePhoneInputValueStore((state) => state.variant);
+   const {setVariant} = usePhoneInputValueStore();
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -33,6 +36,11 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
       useNativeDriver: true,
       easing: Easing.ease
     }).start();
+    if(variant=="error" && variant !== "multiLine") {
+      setVariant("primary");
+    }else{
+      setVariant("multiLine");
+    }
   }
 
   const transX= transY.current.interpolate({
@@ -58,6 +66,8 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
   }
   
   return (
+    <View>
+
     <View style={[
         styles.container,
           isFocused ?
@@ -86,15 +96,21 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
         </Text>
       </Animated.View>
       <TextInput placeholder={placeholder} value={inputValue} 
-       style={
-        styles.input
-       }
+       style={[
+        styles.input, 
+        variant === "error" && { borderColor: "red" },        
+       ]}
       onFocus={handleFocus}
       onBlur={handleBlur}
       placeholderTextColor="transparent"
       onChangeText={handleChangeText}
       multiline={variant === "multiLine"}
       />
+      
+    </View>
+    {variant === "error" && (
+        <Text style={styles.errorText}>Input Field cannot be empty</Text>
+    )}
     </View>
   )
 }
@@ -107,9 +123,10 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent : "center",
     marginVertical: 10,
+
   },
   input: {
-    padding: 15,
+    padding: 20,
     paddingTop: 25,
     paddingBottom: 10,
     marginTop: 7,
@@ -127,5 +144,11 @@ const styles = StyleSheet.create({
     color: layout.text.grey,
     fontSize: layout.size.sm,
     fontWeight: layout.weight.slim
+  },
+  errorText: {
+    color: 'red',
+    fontSize: layout.size.sm,
+    fontWeight: layout.weight.slim,
+    marginTop: 5,
   }
 })
