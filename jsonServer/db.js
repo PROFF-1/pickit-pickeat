@@ -6,6 +6,7 @@ module.exports = () => {
     kitchens: [],
     foods: [],
     pickups: [],
+    coupons: [],
     foodCategories: [
       { id: 1, name: 'Home Cooked' },
       { id: 2, name: 'Bakery' },
@@ -70,6 +71,26 @@ module.exports = () => {
       discountedPrice,
       isDiscountAvailable: faker.helpers.arrayElement(["Yes", "No"]),
       status: faker.helpers.arrayElement(['available', 'reserved', 'completed'])
+    });
+  }
+
+
+  const minStart = faker.number.int({ min: 0, max: 30 });
+
+  //4. Generate Discount coupons 
+  for (let i = 1; i <= 5; i++) {
+    data.coupons.push({
+      id: i,
+      spendAmount: faker.number.int({ min: 20, max: 100 }),
+      saveAmount: faker.number.int({ min: 5, max: 20 }),
+      imageUrl: faker.image.url({ category: "business" }),
+      kitchenId: faker.number.int({ min: 1, max: 10 }),
+      deliveryFee: faker.number.float({ min: 1.0, max: 5.0, precision: 0.01 }),
+      discountPercentage: faker.number.int({ min: 5, max: 30 }),
+      delieveryTime: {
+        from: minStart,
+        to: faker.number.int({ min: minStart + 5, max: 60 })
+      },
     });
   }
 

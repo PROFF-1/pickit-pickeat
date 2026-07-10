@@ -1,16 +1,33 @@
- export interface RootObject {
+export interface RootObject {
   kitchens: Kitchen[];
   foods: Food[];
   pickups: Pickup[];
+  coupons: Coupon[];
   foodCategories: FoodCategory[];
 }
 
-interface FoodCategory {
+export interface FoodCategory {
   id: number;
   name: string;
 }
 
-interface Pickup {
+export interface Coupon {
+  id: number;
+  spendAmount: number;
+  saveAmount: number;
+  imageUrl: string;
+  kitchenId: number;
+  deliveryFee: number;
+  discountPercentage: number;
+  deliveryTime: DeliveryTime;
+}
+
+export interface DeliveryTime {
+  from: number;
+  to: number;
+}
+
+export interface Pickup {
   id: number;
   foodId: number;
   claimerId: number;
@@ -19,7 +36,7 @@ interface Pickup {
   status: string;
 }
 
- export interface Food {
+export interface Food {
   id: number;
   providerId: number;
   title: string;
@@ -51,12 +68,12 @@ export interface Kitchen {
   businessMail: string;
   businessAddress: string;
   profession: string;
-  VendorType: string;
+  vendorType: string;
   workingAloneStatus: string;
   avatar: string;
   storeImage: string;
-  AdditionalInfo: string;
-  Availability: Availability;
+  additionalInfo: string;
+  availability: Availability;
   phone: string;
   rating: number;
   joinedAt: string;
@@ -65,7 +82,7 @@ export interface Kitchen {
 export interface Availability {
   from: string;
   to: string;
-  availabityOnHolidays: string;
+  availabilityOnHolidays: string;
   timeStart: string;
   timeEnd: string;
   numberOfWorkers: null | number;
