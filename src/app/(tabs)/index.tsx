@@ -5,6 +5,9 @@ import {useFood} from "../../hooks/use-food";
 import {SafeAreaView} from "react-native-safe-area-context";
 import * as Expo from "@expo/vector-icons";
 import { layout } from '@/constants/layout';
+import {useCouponStore} from "@/stores/foodStore";
+import { useCoupon, getKitchenByCoupon } from '@/hooks/use-coupon';
+import { Coupon } from '@/types/type';
 
 interface Listing {
   id: number;
@@ -17,12 +20,25 @@ interface Listing {
 
 const screenWidth = Dimensions.get('window').width;
 
+function CouponCard({item}: { item: Coupon}){
+  const {data : kitchen} = getKitchenByCoupon(item);
+
+  return (
+    <View style={styles.discountCard}>
+      <Image source={{ uri: item.imageUrl }} style={styles.discountImage} />
+      <View style={styles.discountTextContainer}>
+        <Text>{kitchen?.businessName}</Text>
+      <Text style={styles.discountText} ellipsizeMode='tail'>{item.spendAmount}</Text>
+      </View>
+    </View>
+  );
+}
 export default function FoodFeed() {
-
-      useFood()
-
+  
   const {foodItems} = useFoodStore();
-
+  const {coupons} = useCouponStore();
+      useFood()
+      useCoupon()
 
 
   useEffect(() => {
@@ -51,13 +67,15 @@ export default function FoodFeed() {
         </Pressable>
         <Pressable style={styles.headerRight}>
           <TouchableOpacity>
-          <Expo.FontAwesome5 name="search" size={28} color={layout.colors.primary} />
+          <Expo.FontAwesome name="bell" size={28} color={layout.colors.primary} />
           </TouchableOpacity>
           <TouchableOpacity>
           <Expo.Entypo name="mail" size={28} color={layout.colors.primary} />
           </TouchableOpacity>
         </Pressable>
       </View>
+      <View style={styles.foodList}>
+
       <FlatList
         data={foodItems.slice(0, 10)} // Display only the first 10 items
         keyExtractor={(item) => item.id.toString()}
@@ -69,8 +87,21 @@ export default function FoodFeed() {
         )}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
+        
       
       />
+      </View>
+      <View style={styles.discountCardHolder}>
+      <Text>Special Offers for you</Text>
+      <FlatList
+        data={coupons.slice(0, 10)} // Display only the first 10 items
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <CouponCard item={item} />}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+      
+      />
+      </View>
     </SafeAreaView>
   );
 }
@@ -79,6 +110,10 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1,
    backgroundColor: layout.colors.white_background, 
+   justifyContent: 'flex-start',
+  },
+  foodList: {
+    height: screenWidth * 0.50,
   },
   card: { 
     backgroundColor: '#fff', 
@@ -140,4 +175,37 @@ const styles = StyleSheet.create({
     fontWeight: layout.weight.bold,
     color: layout.text.black,
   },
+  discountCardHolder: {
+    paddingHorizontal: 10,
+    height: screenWidth * 0.65,
+  },
+  discountCard: {
+    margin:5,
+    borderRadius: 10,
+    flex: 1,
+    width: screenWidth * 0.7,
+    height: screenWidth * 0.45,
+  },
+  discountImage: { 
+    width: '100%', 
+    height: '100%', 
+    borderRadius: 8 
+  },
+  discountText: { 
+    fontSize: layout.size.sm, 
+    fontWeight: layout.weight.regular, 
+    color: layout.text.grey,
+    marginTop: 10 
+  },
+  discountTextContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'rgb(255, 0, 0)',
+    padding: 5,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    width: '100%',
+    height: '30%',
+  }
 });
