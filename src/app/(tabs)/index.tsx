@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Image, Pressable, StyleSheet, Text, Dimensions, View, TouchableOpacity } from 'react-native';
+import { FlatList, Image, Pressable, StyleSheet, Text, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import {useFoodStore} from "../../stores/foodStore";
 import {useFood} from "../../hooks/use-food";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -9,15 +9,12 @@ import {useCouponStore} from "@/stores/foodStore";
 import { useCoupon, getKitchenByCoupon } from '@/hooks/use-coupon';
 import { Coupon } from '@/types/type';
 import Svg, { Polygon, Path } from 'react-native-svg';
+import Input from '../../components/shared/input';
+import {useKitchenStore} from "@/stores/kitchenStore";
+import { useKitchen } from '@/hooks/use-Kitchen';
+import { useShallow } from 'zustand/shallow';
 
-interface Listing {
-  id: number;
-  avatar: string;
-  storeImage: string;
-  businessName: string;
-  VendorType: string;
-  rating: number;
-}
+
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -72,10 +69,12 @@ function CouponCard({item}: { item: Coupon}){
 }
 export default function FoodFeed() {
   
+  useFood()
+  useCoupon()
+  useKitchen()
   const {foodItems} = useFoodStore();
   const {coupons} = useCouponStore();
-      useFood()
-      useCoupon()
+  const {kitchenItems} = useKitchenStore();
 
 
   useEffect(() => {
@@ -92,7 +91,11 @@ export default function FoodFeed() {
   }, []);
 
   return (
+    <TouchableWithoutFeedback onPress={() => {
+      Keyboard.dismiss();
+    }}>
     <SafeAreaView style={styles.container}>
+      {/*Header Section */}
       <View style={styles.header}>
         <Pressable style={styles.headerLeft}>
           <TouchableOpacity style={styles.iconBackground}>
@@ -111,6 +114,18 @@ export default function FoodFeed() {
           </TouchableOpacity>
         </Pressable>
       </View>
+
+
+      {/*Search Section */}
+      <View style={styles.searchSection}>
+      <Input placeholder="Search for available foods"
+        inputContainerStyle={styles.searchInput} 
+         leftIcon={<Expo.Feather name="search" size={20} color={layout.colors.primary} />}
+         rightIcon={<Expo.Feather name="mic" size={20} color={layout.colors.primary} />}
+        />
+      </View>
+
+      {/*Food List Section */}
       <View style={styles.foodList}>
 
       <FlatList
@@ -128,6 +143,7 @@ export default function FoodFeed() {
       
       />
       </View>
+      {/*Discount Card Section */}  
       <View style={styles.discountCardHolder}>
       <Text>Special Offers for you</Text>
       <FlatList
@@ -139,7 +155,24 @@ export default function FoodFeed() {
       
       />
       </View>
+
+      {/*Kitchen List Section */}
+      <View style={styles.kitchenList}>
+        <FlatList
+          data={kitchenItems.slice(0, 10)} // Display only the first 10 items
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.chefCard}>
+              <Image source={{ uri: item.avatar }} style={styles.chefImage} />
+              <Text style={styles.title} ellipsizeMode='tail'>{item.username}</Text>
+            </TouchableOpacity>
+          )}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
     </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -150,7 +183,7 @@ const styles = StyleSheet.create({
    justifyContent: 'flex-start',
   },
   foodList: {
-    height: screenWidth * 0.50,
+    height: screenWidth * 0.45,
   },
   card: { 
     backgroundColor: '#fff', 
@@ -180,7 +213,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: screenWidth * 0.02,
     paddingVertical: 10,
   },
   headerLeft: {
@@ -212,9 +245,21 @@ const styles = StyleSheet.create({
     fontWeight: layout.weight.bold,
     color: layout.text.black,
   },
+
+  searchSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  searchInput: {
+    width: screenWidth * 0.95,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: layout.colors.tertiary,
+  },
   discountCardHolder: {
     paddingHorizontal: 10,
-    height: screenWidth * 0.65,
+    height: screenWidth * 0.55,
   },
   discountCard: {
     margin:5,
@@ -286,5 +331,21 @@ const styles = StyleSheet.create({
     fontSize: layout.size.xs,
     fontWeight: layout.weight.light,
     color: layout.text.grey,
+  },
+  kitchenList: {
+    height: screenWidth * 0.27,
+    
+  },
+  chefCard: {
+    margin:5,
+    borderRadius: 99,
+    flex: 1,
+    width: screenWidth * 0.15,
+    height: screenWidth * 0.15,
+  },
+  chefImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 99,
   },
 });

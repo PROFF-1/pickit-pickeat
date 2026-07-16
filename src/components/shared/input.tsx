@@ -44,8 +44,8 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
   }
 
   const transX= transY.current.interpolate({
-    inputRange: [-30, 0],
-    outputRange: [0, 0],
+    inputRange: leftIcon ? [0, 0] : [-30, 0],
+    outputRange: leftIcon ? [20, 0] : [0, 0],
     extrapolate: 'clamp',
   });
 
@@ -107,11 +107,23 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
         <Text style={styles.lable}>
           {placeholder}
         </Text>
-      </Animated.View>
+      </Animated.View >
+      {leftIcon && (
+        <View style={{ position: 'absolute', left: 10, top: 20 }}>
+          {leftIcon}
+        </View>
+      )}
+      {
+        rightIcon && (
+        <View style={{ position: 'absolute', right: 10, top: 20 }}>
+          {rightIcon}
+        </View>
+      )}
+
       <TextInput placeholder={placeholder} value={inputValue} 
        style={[
-        styles.input, 
-        variant === "error" && { borderColor: "red" },        
+        styles.input, {marginLeft: leftIcon ? 30 : 0, marginRight: rightIcon ? 30 : 0}, 
+        variant === "error" && { borderColor: "red", },        
        ]}
       onFocus={handleFocus}
       onBlur={handleBlur}
