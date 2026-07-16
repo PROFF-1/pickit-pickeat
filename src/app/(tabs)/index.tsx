@@ -8,6 +8,7 @@ import { layout } from '@/constants/layout';
 import {useCouponStore} from "@/stores/foodStore";
 import { useCoupon, getKitchenByCoupon } from '@/hooks/use-coupon';
 import { Coupon } from '@/types/type';
+import Svg, { Polygon, Path } from 'react-native-svg';
 
 interface Listing {
   id: number;
@@ -24,13 +25,49 @@ function CouponCard({item}: { item: Coupon}){
   const {data : kitchen} = getKitchenByCoupon(item);
 
   return (
-    <View style={styles.discountCard}>
+    <TouchableOpacity style={styles.discountCard}>
       <Image source={{ uri: item.imageUrl }} style={styles.discountImage} />
-      <View style={styles.discountTextContainer}>
-        <Text>{kitchen?.businessName}</Text>
-      <Text style={styles.discountText} ellipsizeMode='tail'>{item.spendAmount}</Text>
-      </View>
+
+
+      <View style={styles.spendSaveTextContainer}>
+      <Text style={styles.discountText}>{`Spend $${item.spendAmount}, Save $${item.saveAmount}`}</Text>
     </View>
+      <View style={styles.discountTextContainer}>
+        <Svg
+    height="125%"
+    width="55%"
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    style={{ position: 'absolute', right: -35, bottom: 0, }}
+  >
+    
+    <Polygon
+      points="30,0 100,0 100,100 0,100"
+      fill="#36f730"
+    />
+  </Svg>
+        <Svg
+    height="165%"
+    width="55%"
+    transform="translate(0, 10)"
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    style={{ position: 'absolute', right: -90, bottom: 0 }}
+  >
+    <Polygon
+      points="0,0 100,0 40,100"
+      fill="#228b22"
+    />
+  </Svg>
+  <Image source={require('../../assets/Star 2.jpg')} style={styles.starImage} />
+  <Text style={styles.percentageSign}>{`%${item.discountPercentage} \n OFF`}</Text>
+
+        <View style={styles.kitchenNameContainer}>
+        <Text style={styles.kitchenName} ellipsizeMode="tail" numberOfLines={1}>{kitchen?.businessName}</Text>
+        </View>
+        <Text style={styles.deliveryInfo}>{`$${item.deliveryFee.toFixed(2)} delivery fee | ${item.deliveryTime} mins`}</Text>
+      </View>
+    </TouchableOpacity>
   );
 }
 export default function FoodFeed() {
@@ -80,10 +117,10 @@ export default function FoodFeed() {
         data={foodItems.slice(0, 10)} // Display only the first 10 items
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <TouchableOpacity style={styles.card}>
             <Image source={{ uri: item.imageUrl }} style={styles.image} />
             <Text style={styles.title} ellipsizeMode='tail'>{item.title}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -191,21 +228,63 @@ const styles = StyleSheet.create({
     height: '100%', 
     borderRadius: 8 
   },
+  kitchenNameContainer: {
+    width: '70%',
+  },
   discountText: { 
-    fontSize: layout.size.sm, 
-    fontWeight: layout.weight.regular, 
+    fontSize: layout.size.sm_base, 
+    fontWeight: layout.weight.bold, 
     color: layout.text.grey,
-    marginTop: 10 
   },
   discountTextContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
-    backgroundColor: 'rgb(255, 0, 0)',
+    backgroundColor: '#ECFED6',
     padding: 5,
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
     width: '100%',
     height: '30%',
-  }
+    overflow: 'hidden',
+  },
+  starImage: {
+    position: 'absolute',
+    top: 7,
+    right: 35,
+    width: 40,
+    height: 40,
+    borderRadius: 99,
+  },
+  percentageSign: {
+    position: 'absolute',
+    top: 12,
+    right: 42,
+    fontSize: layout.size.sm,
+    fontWeight: layout.weight.bold,
+    color: layout.text.white,
+  },
+  spendSaveTextContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 0,
+    backgroundColor: '#ECFED6',
+    borderTopLeftRadius: 999,
+    borderBottomLeftRadius: 999,
+    width: '60%',
+    height: '20%',
+    overflow: 'hidden',
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+  },
+  kitchenName: {
+    fontSize: layout.size.sm_base,
+    fontWeight: layout.weight.bold,
+    color: layout.text.black,
+  },
+  deliveryInfo: {
+    fontSize: layout.size.xs,
+    fontWeight: layout.weight.light,
+    color: layout.text.grey,
+  },
 });
