@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Animated, Easing, Dimensions } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { layout } from '@/constants/layout'
 import { usePhoneInputValueStore } from '@/stores/generalStore'
 
@@ -44,8 +44,8 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
   }
 
   const transX= transY.current.interpolate({
-    inputRange: [-30, 0],
-    outputRange: [0, 0],
+    inputRange: leftIcon ? [0, 0] : [-30, 0],
+    outputRange: leftIcon ? [20, 0] : [0, 0],
     extrapolate: 'clamp',
   });
 
@@ -59,6 +59,19 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
       }).start();
     }
   }
+
+  useEffect(() => {
+    if(value){
+      Animated.timing(transY.current, {
+      toValue: -15,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.ease
+    }).start();
+
+    }
+
+  }, [value]);
 
   const handleChangeText = (text: string) => {
     setInputValue(text);  
@@ -94,11 +107,23 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
         <Text style={styles.lable}>
           {placeholder}
         </Text>
-      </Animated.View>
+      </Animated.View >
+      {leftIcon && (
+        <View style={{ position: 'absolute', left: 10, top: 20 }}>
+          {leftIcon}
+        </View>
+      )}
+      {
+        rightIcon && (
+        <View style={{ position: 'absolute', right: 10, top: 20 }}>
+          {rightIcon}
+        </View>
+      )}
+
       <TextInput placeholder={placeholder} value={inputValue} 
        style={[
-        styles.input, 
-        variant === "error" && { borderColor: "red" },        
+        styles.input, {marginLeft: leftIcon ? 30 : 0, marginRight: rightIcon ? 30 : 0}, 
+        variant === "error" && { borderColor: "red", },        
        ]}
       onFocus={handleFocus}
       onBlur={handleBlur}
@@ -109,7 +134,7 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
       
     </View>
     {variant === "error" && (
-        <Text style={styles.errorText}>Input Field cannot be empty</Text>
+        <Text style={styles.errorText}>Field cannot be empty</Text>
     )}
     </View>
   )

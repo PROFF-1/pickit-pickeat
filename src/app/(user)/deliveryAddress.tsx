@@ -269,7 +269,7 @@ const [center, setCenter] = useState<[number, number]>([
                     setVariant("primary");
                     storeUpdatedUserInfo();
                 router.push("../(tabs)");
-                                }
+              }
               }}
               
               />
