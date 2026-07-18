@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FlatList, Image, Pressable, StyleSheet, Text, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { FlatList, Image, Pressable, StyleSheet, Text, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
 import {useFoodStore} from "../../stores/foodStore";
 import {useFood} from "../../hooks/use-food";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -17,6 +17,7 @@ import { useShallow } from 'zustand/shallow';
 
 
 const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
 
 function CouponCard({item}: { item: Coupon}){
   const {data : kitchen} = getKitchenByCoupon(item);
@@ -75,6 +76,17 @@ export default function FoodFeed() {
   const {foodItems} = useFoodStore();
   const {coupons} = useCouponStore();
   const {kitchenItems} = useKitchenStore();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likedItems, setLikedItems] = useState<number[]>([]);
+
+
+  const handleLikePress = (id: number) => {
+    if (likedItems.includes(id)) {
+      setLikedItems(likedItems.filter(itemId => itemId !== id));
+    } else {
+      setLikedItems([...likedItems, id]);
+    }
+  }
 
 
   useEffect(() => {
@@ -95,6 +107,7 @@ export default function FoodFeed() {
       Keyboard.dismiss();
     }}>
     <SafeAreaView style={styles.container}>
+      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
       {/*Header Section */}
       <View style={styles.header}>
         <Pressable style={styles.headerLeft}>
@@ -144,8 +157,8 @@ export default function FoodFeed() {
       />
       </View>
       {/*Discount Card Section */}  
+      <Text style={styles.sectionTitle}>Special Offers for you</Text>
       <View style={styles.discountCardHolder}>
-      <Text>Special Offers for you</Text>
       <FlatList
         data={coupons.slice(0, 10)} // Display only the first 10 items
         keyExtractor={(item) => item.id.toString()}
@@ -156,8 +169,9 @@ export default function FoodFeed() {
       />
       </View>
 
-      {/*Kitchen List Section */}
-      <View style={styles.kitchenList}>
+      {/*Kitchen chef List Section */}
+      <Text style={styles.sectionTitle}>Featured Sellers</Text>
+      <View style={styles.kitchenChefList}>
         <FlatList
           data={kitchenItems.slice(0, 10)} // Display only the first 10 items
           keyExtractor={(item) => item.id.toString()}
@@ -171,6 +185,45 @@ export default function FoodFeed() {
           showsHorizontalScrollIndicator={false}
         />
       </View>
+      {/*Kitchen List Section */}
+      <Text style={styles.sectionTitle}>Kitchens near you</Text>
+      <View style={styles.kitchenList}>
+        <FlatList
+          data={kitchenItems.slice(0, 5)} // Display only the first 5 items
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.kitchenCard}>
+              {/*Kitchen Image Section */}
+              <Image source={{ uri: item.avatar }} style={styles.kitchenImage} />
+              {/*Kitchen Name and Arrival Time Section */}
+              <View style={styles.NameContainer}>
+              <Text style={styles.kitchenTitle} ellipsizeMode='tail'>{item.businessName}</Text>
+              <Text style={styles.arrivalTime}>{`Arrival: ${item.arrivalTime.from} - ${item.arrivalTime.to} mins`}</Text>
+              </View>
+              {/*Kitchen Rating Section */}
+              <View style={styles.kitchenRatingSection}>
+                {/* Display the rating as stars */}
+                <View style={styles.ratingContainerUpper}>
+                  <View style={styles.rating}>
+                    <Expo.FontAwesome name="star" size={16} color={layout.colors.primary} />
+                    <Text>{item.rating}</Text>
+                  </View>
+                  <TouchableOpacity style={styles.like} onPress={() => handleLikePress(item.id)}>
+                    <Expo.Entypo name={likedItems.includes(item.id) ? "heart" : "heart-outlined"} size={16} color= "green" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.ratingContainerLower}>
+                {/*display delivery fee */}
+                <Text style={styles.deliveryFee}>{`Delivery Fee: ${item.deliveryFee.toFixed(2)}`}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+          showsHorizontalScrollIndicator={false}
+          nestedScrollEnabled={false}
+        />
+      </View>
+      </ScrollView>
     </SafeAreaView>
     </TouchableWithoutFeedback>
   );
@@ -203,7 +256,7 @@ const styles = StyleSheet.create({
     fontSize: layout.size.sm, 
     fontWeight: layout.weight.regular, 
     color: layout.text.grey,
-    marginTop: 10 
+    // marginTop: 10 
   },
   category: { 
     color: 'gray', 
@@ -258,8 +311,8 @@ const styles = StyleSheet.create({
     borderColor: layout.colors.tertiary,
   },
   discountCardHolder: {
-    paddingHorizontal: 10,
     height: screenWidth * 0.55,
+    paddingHorizontal: 10,
   },
   discountCard: {
     margin:5,
@@ -275,6 +328,14 @@ const styles = StyleSheet.create({
   },
   kitchenNameContainer: {
     width: '70%',
+  },
+
+  sectionTitle: {
+    fontSize: layout.size.sm_base,
+    fontWeight: layout.weight.bold,
+    color: layout.text.grey,
+    marginTop: 10,
+    paddingHorizontal: 10,
   },
   discountText: { 
     fontSize: layout.size.sm_base, 
@@ -332,8 +393,9 @@ const styles = StyleSheet.create({
     fontWeight: layout.weight.light,
     color: layout.text.grey,
   },
-  kitchenList: {
-    height: screenWidth * 0.27,
+  kitchenChefList: {
+    height: screenWidth * 0.3,
+    marginVertical: screenHeight * 0.03,
     
   },
   chefCard: {
@@ -348,4 +410,71 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 99,
   },
+  kitchenList: {
+    // height: screenHeight * 0.5,
+  },
+  kitchenCard: {
+    margin:15,
+    borderRadius: 10,
+    width: screenWidth ,
+    height: screenWidth * 0.2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  arrivalTime: {
+    fontSize: layout.size.xs,
+    fontWeight: layout.weight.light,
+    color: layout.text.grey,
+  },
+  kitchenImage: {
+    width: '25%',
+    height: '100%',
+    borderRadius: 8,
+  },
+  kitchenTitle: {
+    fontSize: layout.size.sm_base,
+    fontWeight: layout.weight.bold,
+    color: layout.text.black,
+  },
+  NameContainer: {
+    paddingHorizontal: 10,
+    justifyContent: 'space-around',
+    flexDirection: 'column',
+    width: '40%',
+  },
+  kitchenRatingSection: {
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    paddingHorizontal: 10,
+    width: '35%',
+  },
+  ratingContainerUpper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingContainerLower: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: layout.colors.quatenary,
+    justifyContent: 'space-between',
+    width: 50,
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    borderRadius: 10,
+  },
+  like: {
+    marginLeft: 15,
+  },
+  deliveryFee: {
+    fontSize: layout.size.sm,
+    fontWeight: layout.weight.light,
+    color: layout.text.grey,
+  },
+
 });

@@ -77,6 +77,11 @@ export interface Kitchen {
   phone: string;
   rating: number;
   joinedAt: string;
+  deliveryFee: number;
+  arrivalTime: {
+    from: number;
+    to: number;
+  };
 }
 
 export interface Availability {

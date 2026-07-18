@@ -16,6 +16,8 @@ module.exports = () => {
     ],
   };
 
+  
+  const minStart = faker.number.int({ min: 0, max: 30 });
   // 1. Generate 100 App Users (Both as Meal Providers and Claimers)
   for (let i = 1; i <= 10; i++) {
     data.kitchens.push({
@@ -42,7 +44,12 @@ module.exports = () => {
       },
       phone: faker.phone.number(),
       rating: parseFloat(faker.number.float({ min: 4.0, max: 5.0, fractionDigits: 1 })),
-      joinedAt: faker.date.past().toISOString()
+      joinedAt: faker.date.past().toISOString(),
+      deliveryFee: faker.number.float({ min: 1.0, max: 5.0, precision: 0.01 }),
+      arrivalTime: {
+        from: minStart,
+        to: minStart + faker.number.int({ min: 5, max: 60 })
+      }
     });
   }
 
@@ -75,7 +82,6 @@ module.exports = () => {
   }
 
 
-  const minStart = faker.number.int({ min: 0, max: 30 });
 
   //4. Generate Discount coupons 
   for (let i = 1; i <= 5; i++) {

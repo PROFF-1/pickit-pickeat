@@ -1,7 +1,8 @@
 import * as Expo from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from "expo-router";
-import { Dimensions, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TextInput, View, } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import CountryPicker from "react-native-country-picker-modal";
 import pickitpickeatLogo from "../../assets/pickitpickeatLogo.png";
 import Button from '../../components/shared/button';
@@ -37,7 +38,7 @@ export default function userphoneauth() {
     }
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
         <Image
         source={pickitpickeatLogo}
         resizeMode="cover"
@@ -102,7 +103,7 @@ export default function userphoneauth() {
         
         />
         
-    </View>
+    </SafeAreaView>
   )
 }
 
