@@ -69,6 +69,8 @@ function CouponCard({item}: { item: Coupon}){
   );
 }
 export default function FoodFeed() {
+
+  const categories = ['All', 'Home Cooked', 'Bakery', 'Groceries', 'Restaurant Overstock', 'Vegan']
   
   useFood()
   useCoupon()
@@ -81,6 +83,7 @@ export default function FoodFeed() {
   const [searchText, setSearchText] = useState('');
   const [filteredFoodItems, setFilteredFoodItems] = useState(foodItems);
   const [searchTriggered, setSearchTriggered] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>("All");
 
 
   const handleLikePress = (id: number) => {
@@ -157,10 +160,12 @@ export default function FoodFeed() {
       <Input placeholder="Search for available foods"
         inputContainerStyle={styles.searchInput} 
         onChangeText={(value) => handleSearch(value)}
+        value={searchText}
          leftIcon={<Expo.Feather name="search" size={20} color={layout.colors.primary} />}
          rightIcon={searchTriggered ? 
           <TouchableOpacity style={styles.closeButton} onPress={()=>{
             setSearchTriggered(false);
+            setSearchText('');
           }
           }>
          <Expo.MaterialIcons name="close" size={20} color={layout.colors.primary} /> 
@@ -192,6 +197,44 @@ export default function FoodFeed() {
             <Text style={{ fontSize: layout.size.sm_base, fontWeight: layout.weight.bold, color: layout.text.grey, alignSelf: 'center', marginVertical: 10 }}>
               Search Results for "{searchText}"
             </Text>
+             <View style={styles.categoryFilterButtonContainer}>
+            {/* {
+              categories.map((category) => (
+               
+                <TouchableOpacity 
+                  key={category}
+                  style={[styles.categoryFilterButton, { backgroundColor: selectedCategory === category ? layout.colors.primary : layout.colors.quatenary }]}
+                  onPress={() => setSelectedCategory(category)}
+                >
+                  <Text style={{ color: selectedCategory === category ? layout.text.white : layout.text.black }}>
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+                
+              ))
+            } */}
+
+            <FlatList
+              data={categories}
+              keyExtractor={(item) => item}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity 
+                  key={item}
+                  style={[styles.categoryFilterButton, { backgroundColor: selectedCategory === item ? layout.colors.primary : layout.colors.quatenary }]}
+                  onPress={() =>{
+                    setSelectedCategory(item);
+                    setSearchText(item);
+                  }}
+                >
+                  <Text style={{ color: selectedCategory === item ? layout.text.white : layout.text.black }}>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+            </View>
             <FlatList 
               data={filteredFoodItems}
               keyExtractor={(item) => item.id.toString()}
@@ -615,6 +658,21 @@ const styles = StyleSheet.create({
     height: "100%",
     alignSelf: 'center',
     marginTop: screenHeight * 0.1,
+  },
+  categoryFilterButton: {
+  
+   justifyContent: 'space-around',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginHorizontal: 5,
+  },
+  categoryFilterButtonContainer: {
+     flexDirection: 'row',
+   alignItems: 'center',
+   width: '100%',
+   justifyContent: 'center',
+   marginVertical: 10,
   },
 
 
