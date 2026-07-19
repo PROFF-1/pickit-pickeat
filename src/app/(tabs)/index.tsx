@@ -178,6 +178,16 @@ export default function FoodFeed() {
 
       {
         searchTriggered ? (
+          searchText === '' ? 
+          <TouchableWithoutFeedback style={styles.searchView} onPress={() => {
+            Keyboard.dismiss();
+            setSearchTriggered(false);
+          }}>
+            <Image source={require('../../assets/noSearch.jpg')} style={styles.noSearchImage}
+             resizeMode="contain"
+            />
+            
+          </TouchableWithoutFeedback> : (
           <View style={styles.searchView}>
             <Text style={{ fontSize: layout.size.sm_base, fontWeight: layout.weight.bold, color: layout.text.grey, alignSelf: 'center', marginVertical: 10 }}>
               Search Results for "{searchText}"
@@ -196,7 +206,7 @@ export default function FoodFeed() {
               numColumns={2}
             />
           </View>
-        ) :
+        )) :
         (
           <>
 
@@ -599,6 +609,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust the opacity as needed
     borderRadius: 10,
     zIndex: 1,
+  },
+  noSearchImage: {
+    width: "100%",
+    height: "100%",
+    alignSelf: 'center',
+    marginTop: screenHeight * 0.1,
   },
 
 
