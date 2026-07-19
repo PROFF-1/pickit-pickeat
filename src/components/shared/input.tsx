@@ -115,7 +115,7 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
       )}
       {
         rightIcon && (
-        <View style={{ position: 'absolute', right: 10, top: 20 }}>
+        <View style={{ position: 'absolute', right: 10, top: 10 }}>
           {rightIcon}
         </View>
       )}
@@ -130,6 +130,7 @@ export default function Input({ placeholder, value, onPress, leftIcon, rightIcon
       placeholderTextColor="transparent"
       onChangeText={handleChangeText}
       multiline={variant === "multiLine"}
+      onPress={onPress}
       />
       
     </View>

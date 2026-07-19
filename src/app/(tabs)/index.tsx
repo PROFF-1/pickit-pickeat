@@ -78,6 +78,9 @@ export default function FoodFeed() {
   const {kitchenItems} = useKitchenStore();
   const [isLiked, setIsLiked] = useState(false);
   const [likedItems, setLikedItems] = useState<number[]>([]);
+  const [searchText, setSearchText] = useState('');
+  const [filteredFoodItems, setFilteredFoodItems] = useState(foodItems);
+  const [searchTriggered, setSearchTriggered] = useState(false);
 
 
   const handleLikePress = (id: number) => {
@@ -86,6 +89,25 @@ export default function FoodFeed() {
     } else {
       setLikedItems([...likedItems, id]);
     }
+  }
+
+  const handleSearch=(text: string) => {
+    
+    setSearchText(text);
+    if (text.trim() === '') {
+      setFilteredFoodItems(foodItems);
+      return;
+    }
+
+    const filtered = foodItems.filter((item)=>{
+      const ItemData= item.title.toLowerCase();
+      const textData= text.toLowerCase();
+      return ItemData.includes(textData);
+    })
+
+
+    console.log("Searching for:", text);
+    setFilteredFoodItems(filtered);
   }
 
 
@@ -105,6 +127,7 @@ export default function FoodFeed() {
   return (
     <TouchableWithoutFeedback onPress={() => {
       Keyboard.dismiss();
+      setSearchTriggered(false);
     }}>
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
@@ -133,10 +156,49 @@ export default function FoodFeed() {
       <View style={styles.searchSection}>
       <Input placeholder="Search for available foods"
         inputContainerStyle={styles.searchInput} 
+        onChangeText={(value) => handleSearch(value)}
          leftIcon={<Expo.Feather name="search" size={20} color={layout.colors.primary} />}
-         rightIcon={<Expo.Feather name="mic" size={20} color={layout.colors.primary} />}
+         rightIcon={searchTriggered ? 
+          <TouchableOpacity style={styles.closeButton} onPress={()=>{
+            setSearchTriggered(false);
+          }
+          }>
+         <Expo.MaterialIcons name="close" size={20} color={layout.colors.primary} /> 
+         </TouchableOpacity> : 
+         <TouchableOpacity style={styles.filterButton}>
+          <Text>Filter</Text>
+         <Expo.Ionicons name="filter" size={20} color={layout.colors.primary} />
+         </TouchableOpacity>
+         }
+         onPress={() => {
+          setSearchTriggered(true);
+         }}
         />
       </View>
+
+      {
+        searchTriggered ? (
+          <View style={styles.searchView}>
+            <Text style={{ fontSize: layout.size.sm_base, fontWeight: layout.weight.bold, color: layout.text.grey, alignSelf: 'center', marginVertical: 10 }}>
+              Search Results for "{searchText}"
+            </Text>
+            <FlatList 
+              data={filteredFoodItems}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.searchedFoodcard}>
+                  <View style={styles.overlay} />
+                  <Image source={{ uri: item.imageUrl }} style={styles.searchedFoodimage} />
+                  <Text style={styles.searchedFoodtitle} ellipsizeMode='tail'>{item.category}</Text>
+                </TouchableOpacity>
+              )}
+              showsHorizontalScrollIndicator={false}
+              numColumns={2}
+            />
+          </View>
+        ) :
+        (
+          <>
 
       {/*Food List Section */}
       <View style={styles.foodList}>
@@ -223,6 +285,9 @@ export default function FoodFeed() {
           nestedScrollEnabled={false}
         />
       </View>
+      </>
+        )
+    }
       </ScrollView>
     </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -309,6 +374,25 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     borderColor: layout.colors.tertiary,
+    backgroundColor: layout.colors.white_background,
+  },
+  filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    width:74,
+    borderRadius: 5,
+    backgroundColor: layout.colors.quatenary,
+  },
+  closeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    height:40,
+    width:40,
+    borderRadius: 999,
+    backgroundColor: layout.colors.quatenary,
   },
   discountCardHolder: {
     height: screenWidth * 0.55,
@@ -476,5 +560,46 @@ const styles = StyleSheet.create({
     fontWeight: layout.weight.light,
     color: layout.text.grey,
   },
+
+  searchView: {
+    width: screenWidth,
+    flex: 1,
+    height: screenHeight ,
+  },
+
+  searchedFoodcard: {
+    marginVertical:10,
+    marginHorizontal:10,
+    borderRadius: 10,
+    flex: 1,
+    width: screenWidth * 0.3,
+    height: screenWidth * 0.3,
+  },
+  searchedFoodimage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  searchedFoodtitle: {
+    fontSize: layout.size.sm_base,
+    fontWeight: layout.weight.bold,
+    color: layout.text.white,
+    zIndex: 2,
+    position: 'absolute',
+    left: "40%",
+    width: "50%",
+    top: "40%",
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust the opacity as needed
+    borderRadius: 10,
+    zIndex: 1,
+  },
+
 
 });
