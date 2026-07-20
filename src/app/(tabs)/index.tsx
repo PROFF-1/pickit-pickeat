@@ -111,6 +111,7 @@ export default function FoodFeed() {
 
     console.log("Searching for:", text);
     setFilteredFoodItems(filtered);
+    console.log("Filtered items:", filtered);
   }
 
 
