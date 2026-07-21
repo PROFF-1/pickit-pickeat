@@ -1,9 +1,12 @@
 import "../../global.css";
 import { Stack } from "expo-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import { useGeneralStore } from "../stores/generalStore";
-import { useShallow } from "zustand/shallow";
-import { useEffect } from "react";
+
+
+
+// import { useGeneralStore } from "../stores/generalStore";
+// import { useShallow } from "zustand/shallow";
+// import { useEffect } from "react";
 
 export default function RootLayout() {
 
