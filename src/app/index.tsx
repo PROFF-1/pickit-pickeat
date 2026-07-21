@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native'
+import { StyleSheet, View, Image, Dimensions } from 'react-native'
 import pickitpickeatLogo from "../assets/pickitpickeatLogo.png";
 import React, {useState} from 'react'
 import Button from '@/components/shared/button';

@@ -4,7 +4,7 @@ import { layout } from '@/constants/layout';
 import * as Expo from '@expo/vector-icons';
 import Mapbox from '@rnmapbox/maps';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
